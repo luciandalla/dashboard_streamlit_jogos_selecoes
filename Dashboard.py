@@ -14,7 +14,8 @@ teams = teams.tolist()
 
 
 #Streamlit
-st.set_page_config(layout="wide")
+st.set_option('deprecation.showfileUploaderEncoding', False)
+st.set_page_config(layout="wide", initial_sidebar_state="expanded", theme="light")
 st.title('Análise Histórica dos confrontos entre seleções')
 
 st.write("Explore um tesouro de informações sobre os confrontos históricos entre seleções em um único lugar! \
