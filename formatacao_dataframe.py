@@ -185,7 +185,7 @@ traducao = {
     'Myanmar': 'Mianmar',
     'Namibia': 'Namíbia',
     'Nepal': 'Nepal',
-    'Netherlands': 'Países Baixos',
+    'Netherlands': 'Holanda',
     'New Caledonia': 'Nova Caledônia',
     'New Zealand': 'Nova Zelândia',
     'Nicaragua': 'Nicarágua',
@@ -495,7 +495,6 @@ def formata_df(df, team):
 
     return df, df_home, df_away
 
-
 #Funçao para definir resultado do jogo -> Vitória, Empate ou Derrota
 def determinar_resultado(row, team):
     if row['home_score'] > row['away_score'] and row["home_team"] == team:
@@ -534,3 +533,26 @@ def traduz(nome):
     if nome in traducao:
         return traducao[nome]
     return nome  # Se não houver tradução, retorna o mesmo nome
+
+
+def resultado_por_oponente(df):
+
+    resultados = pd.DataFrame()
+    resultados['Vitória'] = (df['result'] == 'Vitória').groupby(df['opponent']).sum()
+    resultados['Derrota'] = (df['result'] == 'Derrota').groupby(df['opponent']).sum()
+    resultados['Empate'] = (df['result'] == 'Empate').groupby(df['opponent']).sum()
+    resultados['Número de Jogos'] = df.groupby('opponent')['result'].count()
+
+    resultados = resultados.fillna(0)
+    resultados['Percentual Vitórias'] = (resultados['Vitória'] / resultados['Número de Jogos']) * 100
+    resultados['Percentual Derrotas'] = (resultados['Derrota'] / resultados['Número de Jogos']) * 100
+    resultados['Percentual Empates'] = (resultados['Empate'] / resultados['Número de Jogos']) * 100
+    resultados['Percentual Vitórias'] = resultados['Percentual Vitórias'].round(2)
+    resultados['Percentual Derrotas'] = resultados['Percentual Derrotas'].round(2)
+    resultados['Percentual Empates'] = resultados['Percentual Empates'].round(2)
+
+    resultados = resultados.sort_values(by='Número de Jogos', ascending=False)
+    resultados = resultados.head(10)
+    resultados = resultados.sort_values(by=['Percentual Vitórias', 'Percentual Empates', 'Percentual Derrotas'], ascending=True)
+
+    return resultados

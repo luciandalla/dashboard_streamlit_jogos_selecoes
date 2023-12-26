@@ -24,6 +24,7 @@ st.write("Explore um tesouro de informações sobre os confrontos históricos en
         Venha explorar e desvendar os segredos contidos nessas informações!")
 
 with st.sidebar:
+    st.title("Filtros")
     default_index = teams.index('Brasil')
     option_team = st.selectbox('Selecione uma seleção:',(teams), index=default_index)
     df_country, df_home, df_away = fmt_df.formata_df(df, option_team)
@@ -40,11 +41,15 @@ else:
     df_tournament_home = df_home[df_home['tournament'] == option]
     df_tournament_away = df_away[df_away['tournament'] == option]
 
+df_opponent = fmt_df.resultado_por_oponente(df_tournament)
+df_opponent_home = fmt_df.resultado_por_oponente(df_tournament_home)
+df_opponent_away = fmt_df.resultado_por_oponente(df_tournament_away)
+
 # DESEMPENHO GERAL 
 st.write("")
 st.write("")
 st.write("")
-st.subheader(f"{option_team} - Desempenho Geral")
+st.subheader(f"{option_team} - Desempenho Geral em {option}")
 geral, casa, visitante = st.tabs(['Geral', 'Casa', 'Fora'])
 with geral:
     st.write("")
@@ -86,28 +91,69 @@ with visitante:
 st.write("")
 st.write("")
 st.write("")
-st.subheader(f"{option_team} - Desempenho por Década")
+st.subheader(f"{option_team} - Desempenho por Década em {option}")
 geral, casa, visitante = st.tabs(['Geral', 'Casa', 'Fora'])
 with geral:
     st.write("")
     col1, col2 = st.columns(2)
     with col1:
         st.pyplot(graf.graf_jogos_decada(df_tournament))
+        st.pyplot(graf.gols_marcados_sofridos_decada(df_tournament))
     with col2:
         st.pyplot(graf.graf_aproveitamento_decada(df_tournament))
+        st.write("")
+        st.write("")
+        st.pyplot(graf.media_gols(df_tournament))
 
 with casa:
     st.write("")
     col1, col2 = st.columns(2)
     with col1:
         st.pyplot(graf.graf_jogos_decada(df_tournament_home))
+        st.pyplot(graf.gols_marcados_sofridos_decada(df_tournament_home))
     with col2:
         st.pyplot(graf.graf_aproveitamento_decada(df_tournament_home))
+        st.write("")
+        st.write("")
+        st.pyplot(graf.media_gols(df_tournament_home))
+        
 
 with visitante:
     st.write("")
     col1, col2 = st.columns(2)
     with col1:
         st.pyplot(graf.graf_jogos_decada(df_tournament_away))
+        st.pyplot(graf.gols_marcados_sofridos_decada(df_tournament_away))
     with col2:
         st.pyplot(graf.graf_aproveitamento_decada(df_tournament_away))
+        st.write("")
+        st.write("")
+        st.pyplot(graf.media_gols(df_tournament_away))
+
+st.subheader(f"{option_team} - Desempenho Geral por Adversário em {option}")
+geral, casa, visitante = st.tabs(['Geral', 'Casa', 'Fora'])
+
+with geral:
+    st.write("")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.pyplot(graf.desempenho_por_adversario(df_opponent))
+    with col2:
+        st.pyplot(graf.gols_por_adversario(df_tournament))
+
+with casa:
+    st.write("")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.pyplot(graf.desempenho_por_adversario(df_opponent_home))
+    with col2:
+        st.pyplot(graf.gols_por_adversario(df_tournament_home))
+
+with visitante:
+    st.write("")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.pyplot(graf.desempenho_por_adversario(df_opponent_away))
+    with col2:
+        st.pyplot(graf.gols_por_adversario(df_tournament_away))
+
